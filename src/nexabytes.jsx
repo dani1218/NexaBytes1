@@ -119,21 +119,6 @@ function Navbar({ onAdmin }) {
 function Hero() {
   return (
     <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "0 40px 80px", maxWidth: 1400, margin: "0 auto", paddingTop: 120 }}>
-      {/* Top meta row */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 80, flexWrap: "wrap", gap: 20 }}>
-        <div>
-          <span className="section-eyebrow">Islamabad · Pakistan · est. 2024</span>
-        </div>
-        <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
-          {[["30+","Projects Delivered"],["100%","Client Satisfaction"],["<24h","Response Time"]].map(([n, l]) => (
-            <div key={l} style={{ textAlign: "right" }}>
-              <span className="stat-num" style={{ fontSize: "1.6rem" }}>{n}</span>
-              <span className="stat-label">{l}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Main headline */}
       <div style={{ marginBottom: 60 }}>
         <h1 className="big-title" style={{ fontSize: "clamp(3rem, 8vw, 7rem)", marginBottom: 32 }}>
@@ -148,6 +133,21 @@ function Hero() {
           <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0 }}>
             <button className="btn-lime" onClick={() => document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })} style={{ background: T.lime, color: T.charcoal, border: "none", padding: "14px 32px", borderRadius: 4, fontSize: "0.9rem", fontWeight: 800, cursor: "pointer", transition: "all 0.2s" }}>See our work →</button>
             <button className="btn-outline" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} style={{ background: "transparent", color: T.white, border: `1px solid ${T.charcoal3}`, padding: "13px 28px", borderRadius: 4, fontSize: "0.9rem", fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>Start a project</button>
+          </div>
+        </div>
+
+        {/* Stats row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 40, flexWrap: "wrap", gap: 20 }}>
+          <div>
+            {/* <span className="section-eyebrow">Islamabad · Pakistan · est. 2024</span> */}
+          </div>
+          <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
+            {[["30+","Projects Delivered"],["100%","Client Satisfaction"],["<24h","Response Time"]].map(([n, l]) => (
+              <div key={l} style={{ textAlign: "right" }}>
+                <span className="stat-num" style={{ fontSize: "1.6rem" }}>{n}</span>
+                <span className="stat-label">{l}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
