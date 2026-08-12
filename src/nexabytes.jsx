@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import emailjs from "@emailjs/browser";
 
 // ─── BRIVON-STYLE THEME ───────────────────────────────────────────────────────
 const T = {
@@ -14,6 +15,12 @@ const T = {
   mutedLight: "#aaaaaa",
   danger:     "#ff4444",
   success:    "#44ff88",
+};
+
+const EMAILJS_CONFIG = {
+  publicKey: "33WAuqfL4b86LPglb",
+  serviceId: "service_14hs89a",
+  templateId: "template_myyycgp",
 };
 
 // ─── GLOBAL CSS ───────────────────────────────────────────────────────────────
@@ -85,9 +92,11 @@ function Navbar({ onAdmin }) {
       <nav style={{ position: "fixed", top: 0, width: "100%", zIndex: 200, background: scrolled ? "rgba(26,26,26,0.96)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? `1px solid ${T.charcoal3}` : "none", transition: "all 0.3s" }}>
         <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 40px", height: 72, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           {/* Logo */}
-          <span style={{ fontSize: "1.3rem", fontWeight: 900, color: T.white, letterSpacing: "-0.04em", cursor: "pointer" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-            Nexa<span style={{ color: T.lime }}>bytes</span>
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+            <span style={{ fontSize: "1.3rem", fontWeight: 900, color: T.white, letterSpacing: "-0.04em" }}>
+              Nexa<span style={{ color: T.lime }}>bytes</span>
+            </span>
+          </div>
           {/* Desktop links */}
           <ul className="nav-desktop" style={{ display: "flex", gap: 36, listStyle: "none" }}>
             {links.map(([id, label]) => (
@@ -453,13 +462,50 @@ function FAQ() {
 
 // ─── CONTACT ──────────────────────────────────────────────────────────────────
 function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", service: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", service: "", budget: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+  }, []);
+
   const handle = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) { alert("Please fill in all required fields."); return; }
-    setSent(true);
+    if (!form.name || !form.email || !form.message || !form.budget) { alert("Please fill in all required fields, including your budget."); return; }
+
+    if (EMAILJS_CONFIG.publicKey === "YOUR_PUBLIC_KEY" || EMAILJS_CONFIG.serviceId === "YOUR_SERVICE_ID" || EMAILJS_CONFIG.templateId === "YOUR_TEMPLATE_ID") {
+      alert("Please add your EmailJS Public Key, Service ID, and Template ID in the contact form config before sending mail.");
+      return;
+    }
+
+    setSending(true);
+    try {
+      await emailjs.send(
+        EMAILJS_CONFIG.serviceId,
+        EMAILJS_CONFIG.templateId,
+        {
+          from_name: form.name,
+          from_email: form.email,
+          service: form.service || "General Inquiry",
+          project_type: form.service || "General Inquiry",
+          budget: form.budget,
+          total_budget: form.budget,
+          message: form.message,
+        },
+        {
+          publicKey: EMAILJS_CONFIG.publicKey,
+        }
+      );
+      setSent(true);
+      setForm({ name: "", email: "", service: "", budget: "", message: "" });
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      alert("Failed to send message. Please try again or email us directly.");
+    } finally {
+      setSending(false);
+    }
   };
   const inputStyle = { width: "100%", background: T.charcoal, border: `1px solid ${T.charcoal3}`, color: T.white, padding: "14px 16px", fontSize: "0.88rem", outline: "none", fontFamily: "inherit", marginBottom: 14, transition: "border-color 0.2s" };
   return (
@@ -509,15 +555,20 @@ function Contact() {
                     <input name="email" type="email" value={form.email} onChange={handle} style={inputStyle} placeholder="your@email.com" onFocus={e => e.target.style.borderColor = T.lime} onBlur={e => e.target.style.borderColor = T.charcoal3} />
                   </div>
                 </div>
-                <label style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: T.muted, display: "block", marginBottom: 8 }}>Service Needed</label>
+                <label style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: T.muted, display: "block", marginBottom: 8 }}>Project Type</label>
                 <select name="service" value={form.service} onChange={handle} style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}>
                   <option value="">Select a service…</option>
                   {["Custom Software","Web Application","Mobile App","AI / ML","API & Backend","Enterprise Solution","Other"].map(o => <option key={o}>{o}</option>)}
                 </select>
+                <label style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: T.muted, display: "block", marginBottom: 8 }}>Budget *</label>
+                <select name="budget" value={form.budget} onChange={handle} style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}>
+                  <option value="">Select budget range…</option>
+                  {["Under $1k","$1k - $3k","$3k - $5k","$5k - $10k","$10k - $20k","$20k+"].map(o => <option key={o}>{o}</option>)}
+                </select>
                 <label style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: T.muted, display: "block", marginBottom: 8 }}>Project Description *</label>
                 <textarea name="message" value={form.message} onChange={handle} style={{ ...inputStyle, minHeight: 140, resize: "vertical" }} placeholder="Tell us about your project, goals, and timeline…" onFocus={e => e.target.style.borderColor = T.lime} onBlur={e => e.target.style.borderColor = T.charcoal3} />
-                <button type="submit" className="btn-lime" style={{ width: "100%", padding: "16px", background: T.lime, color: T.charcoal, border: "none", fontWeight: 800, fontSize: "0.9rem", cursor: "pointer", letterSpacing: "0.04em", transition: "all 0.2s", marginTop: 4 }}>
-                  Send Message   Let's Build →
+                <button type="submit" className="btn-lime" disabled={sending} style={{ width: "100%", padding: "16px", background: sending ? T.limeDark : T.lime, color: T.charcoal, border: "none", fontWeight: 800, fontSize: "0.9rem", cursor: sending ? "wait" : "pointer", letterSpacing: "0.04em", transition: "all 0.2s", marginTop: 4, opacity: sending ? 0.8 : 1 }}>
+                  {sending ? "Sending..." : "Send Message   Let's Build →"}
                 </button>
               </form>
             )}
@@ -565,7 +616,7 @@ function Footer() {
           ))}
         </div>
         <div style={{ borderTop: `1px solid ${T.charcoal3}`, paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-          <span style={{ fontSize: "0.75rem", color: T.muted }}>© 2024 Nexabytes. All rights reserved.</span>
+          <span style={{ fontSize: "0.75rem", color: T.muted }}>© 2026 Nexabytes. All rights reserved.</span>
           <span style={{ fontSize: "0.75rem", color: T.muted }}>Built with precision for ambitious businesses.</span>
         </div>
       </div>
@@ -781,6 +832,40 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
   );
 }
 
+// ─── WHATSAPP FLOATING BUTTON ─────────────────────────────────────────────────
+function WhatsAppButton() {
+  const number = "923110158663";
+  const url = `https://wa.me/${number}?text=${encodeURIComponent("Hello Nexabytes, I want to discuss my project.")}`;
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Chat on WhatsApp"
+      style={{
+        position: "fixed",
+        left: 24,
+        bottom: 28,
+        width: 54,
+        height: 54,
+        borderRadius: "50%",
+        background: "#25D366",
+        color: "#fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "1.6rem",
+        textDecoration: "none",
+        boxShadow: "0 12px 28px rgba(37, 211, 102, 0.35)",
+        zIndex: 60,
+      }}
+    >
+      💬
+    </a>
+  );
+}
+
 // ─── BACK TO TOP ──────────────────────────────────────────────────────────────
 function BackToTop() {
   const [show, setShow] = useState(false);
@@ -819,6 +904,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <WhatsAppButton />
       <BackToTop />
       {adminOpen && (
         <AdminPanel
