@@ -649,6 +649,21 @@ const INITIAL_PRICING = [
   { id: 3, name: "Enterprise", price: "Custom", sub: "Large-scale systems and platforms", features: ["Full system architecture","AI/ML integration available","Cloud deployment (AWS/GCP)","Dedicated team","12 months SLA support","Ongoing product scaling"], featured: false },
 ];
 
+const STORAGE_KEYS = {
+  projects: "nexabytes-projects",
+  services: "nexabytes-services",
+  plans: "nexabytes-plans",
+};
+
+const readStoredData = (key, fallback) => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : fallback;
+  } catch (error) {
+    return fallback;
+  }
+};
+
 function AdminPanel({ projects, setProjects, services, setServices, plans, setPlans, onClose }) {
   const [authed, setAuthed] = useState(false);
   const [pw, setPw] = useState("");
@@ -882,10 +897,22 @@ function BackToTop() {
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [projects, setProjects] = useState(INITIAL_PROJECTS);
-  const [services, setServices] = useState(INITIAL_SERVICES);
-  const [plans, setPlans] = useState(INITIAL_PRICING);
+  const [projects, setProjects] = useState(() => readStoredData(STORAGE_KEYS.projects, INITIAL_PROJECTS));
+  const [services, setServices] = useState(() => readStoredData(STORAGE_KEYS.services, INITIAL_SERVICES));
+  const [plans, setPlans] = useState(() => readStoredData(STORAGE_KEYS.plans, INITIAL_PRICING));
   const [adminOpen, setAdminOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.projects, JSON.stringify(projects));
+  }, [projects]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.services, JSON.stringify(services));
+  }, [services]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.plans, JSON.stringify(plans));
+  }, [plans]);
 
   return (
     <div style={{ background: T.charcoal, color: T.white, minHeight: "100vh" }}>
