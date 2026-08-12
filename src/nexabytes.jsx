@@ -474,7 +474,12 @@ function Contact() {
               We take on projects year-round. If you have a brief, the right time to send a first note is now. We'll schedule a free discovery call within 24 hours.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-              {[["📧","Email","nexabyte.byt@gmail.com"],["📍","Location","Islamabad, Pakistan   Remote Worldwide"],["⏱️","Response","Within 24 hours, guaranteed"]].map(([icon, label, val]) => (
+              {[
+                ["📧", "Email", "nexabyte.byt@gmail.com"],
+                ["📞", "Phone", "+92 311 0158663"],
+                ["📍", "Location", "Islamabad, Pakistan   Remote Worldwide"],
+                ["⏱️", "Response", "Within 24 hours, guaranteed"]
+              ].map(([icon, label, val]) => (
                 <div key={label} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
                   <div style={{ width: 44, height: 44, background: T.charcoal, border: `1px solid ${T.charcoal3}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>{icon}</div>
                   <div>
@@ -569,7 +574,7 @@ function Footer() {
 }
 
 // ─── ADMIN PANEL ──────────────────────────────────────────────────────────────
-const ADMIN_PASSWORD = "nexabytes2024";
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
 
 const INITIAL_PROJECTS = [
   { id: 1, title: "Chicken House", tags: ["React 19", "TypeScript", "Tailwind", "Vite"], desc: "Digital food ordering platform with live order tracking, modern UI, and fast frontend performance.", impact: "⚡ Realtime orders, delivery tracking, smooth mobile-first ordering", img: "https://images.pexels.com/photos/19252769/pexels-photo-19252769.jpeg", demo: "https://chicken-house-rust.vercel.app/" },
