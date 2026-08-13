@@ -727,9 +727,19 @@ const seedSupabaseServices = async () => {
   try {
     const { data, error } = await supabase.from("services").select("id", { count: "exact", head: true });
     if (!error && data && data.length === 0) {
-      const servicesToInsert = INITIAL_SERVICES.map(s => ({ icon: s.icon, title: s.title, description: s.desc }));
-      await supabase.from("services").insert(servicesToInsert);
-      console.log("Services seeded to Supabase");
+      const servicesToInsert = INITIAL_SERVICES.map(s => ({ id: s.id, icon: s.icon, title: s.title, description: s.desc }));
+      const { error: insertError } = await supabase.from("services").insert(servicesToInsert);
+      if (insertError) console.error("Seed error:", insertError);
+      else console.log("Services seeded to Supabase");
+    } else if (!error && data && data.length > 0) {
+      // Check if first ID is 1, if not clear and re-seed
+      const firstId = data[0]?.id;
+      if (firstId !== 1) {
+        console.log("Re-seeding services with correct IDs...");
+        await supabase.from("services").delete().neq("id", -1);
+        const servicesToInsert = INITIAL_SERVICES.map(s => ({ id: s.id, icon: s.icon, title: s.title, description: s.desc }));
+        await supabase.from("services").insert(servicesToInsert);
+      }
     }
   } catch (err) {
     console.error("Seed services error:", err);
@@ -741,9 +751,19 @@ const seedSupabasePricing = async () => {
   try {
     const { data, error } = await supabase.from("pricing").select("id", { count: "exact", head: true });
     if (!error && data && data.length === 0) {
-      const pricingToInsert = INITIAL_PRICING.map(p => ({ name: p.name, price: p.price, sub: p.sub, features: JSON.stringify(p.features), featured: p.featured }));
-      await supabase.from("pricing").insert(pricingToInsert);
-      console.log("Pricing seeded to Supabase");
+      const pricingToInsert = INITIAL_PRICING.map(p => ({ id: p.id, name: p.name, price: p.price, sub: p.sub, features: JSON.stringify(p.features), featured: p.featured }));
+      const { error: insertError } = await supabase.from("pricing").insert(pricingToInsert);
+      if (insertError) console.error("Seed error:", insertError);
+      else console.log("Pricing seeded to Supabase");
+    } else if (!error && data && data.length > 0) {
+      // Check if first ID is 1, if not clear and re-seed
+      const firstId = data[0]?.id;
+      if (firstId !== 1) {
+        console.log("Re-seeding pricing with correct IDs...");
+        await supabase.from("pricing").delete().neq("id", -1);
+        const pricingToInsert = INITIAL_PRICING.map(p => ({ id: p.id, name: p.name, price: p.price, sub: p.sub, features: JSON.stringify(p.features), featured: p.featured }));
+        await supabase.from("pricing").insert(pricingToInsert);
+      }
     }
   } catch (err) {
     console.error("Seed pricing error:", err);
