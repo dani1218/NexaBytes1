@@ -684,7 +684,7 @@ const fetchServicesFromSupabase = async () => {
 
   const { data, error } = await supabase
     .from("services")
-    .select("id, icon, title, desc")
+    .select("id, icon, title, description")
     .order("id", { ascending: true });
 
   if (error) {
@@ -692,7 +692,7 @@ const fetchServicesFromSupabase = async () => {
     return INITIAL_SERVICES;
   }
 
-  return data || INITIAL_SERVICES;
+  return (data || []).map(s => ({ ...s, desc: s.description })) || INITIAL_SERVICES;
 };
 
 const fetchPricingFromSupabase = async () => {
@@ -708,10 +708,15 @@ const fetchPricingFromSupabase = async () => {
     return INITIAL_PRICING;
   }
 
-  return (data || []).map(p => ({
-    ...p,
-    features: Array.isArray(p.features) ? p.features : (typeof p.features === "string" ? p.features.split(",").map(f => f.trim()) : [])
-  })) || INITIAL_PRICING;
+  return (data || []).map(p => {
+    let features = [];
+    try {
+      features = typeof p.features === "string" ? JSON.parse(p.features) : (Array.isArray(p.features) ? p.features : []);
+    } catch (e) {
+      features = typeof p.features === "string" ? p.features.split(",").map(f => f.trim()) : (Array.isArray(p.features) ? p.features : []);
+    }
+    return { ...p, features };
+  }) || INITIAL_PRICING;
 };
 
 function AdminPanel({ projects, setProjects, services, setServices, plans, setPlans, onClose }) {
@@ -773,9 +778,10 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
   const addService = async () => {
     if (!newSvc.title) { alert("Title required."); return; }
     const newService = { ...newSvc, id: Date.now() };
+    const serviceToSave = { icon: newService.icon, title: newService.title, description: newService.desc, id: newService.id };
     
     if (supabase) {
-      const { error } = await supabase.from("services").insert([newService]);
+      const { error } = await supabase.from("services").insert([serviceToSave]);
       if (error) { console.error("Save error:", error.message); return; }
     }
     
@@ -794,7 +800,8 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
   };
   const saveService = async () => {
     if (supabase && editSvc) {
-      const { error } = await supabase.from("services").update(editSvc).eq("id", editSvc.id);
+      const serviceToSave = { icon: editSvc.icon, title: editSvc.title, description: editSvc.desc };
+      const { error } = await supabase.from("services").update(serviceToSave).eq("id", editSvc.id);
       if (error) { console.error("Save error:", error.message); return; }
     }
     
@@ -803,10 +810,12 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
   };
   const startEditPlan = plan => { setEditPlan({ ...plan }); setEditPlanFeatures(plan.features.join("\n")); };
   const savePlan = async () => {
-    const updatedPlan = { ...editPlan, features: editPlanFeatures.split("\n").map(f => f.trim()).filter(Boolean) };
+    const featuresArray = editPlanFeatures.split("\n").map(f => f.trim()).filter(Boolean);
+    const updatedPlan = { ...editPlan, features: featuresArray };
     
     if (supabase) {
-      const { error } = await supabase.from("pricing").update(updatedPlan).eq("id", editPlan.id);
+      const planToSave = { name: updatedPlan.name, price: updatedPlan.price, sub: updatedPlan.sub, features: JSON.stringify(featuresArray), featured: updatedPlan.featured };
+      const { error } = await supabase.from("pricing").update(planToSave).eq("id", updatedPlan.id);
       if (error) { console.error("Save error:", error.message); return; }
     }
     
