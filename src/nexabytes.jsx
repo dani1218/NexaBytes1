@@ -692,7 +692,8 @@ const fetchServicesFromSupabase = async () => {
     return INITIAL_SERVICES;
   }
 
-  return (data || []).map(s => ({ ...s, desc: s.description })) || INITIAL_SERVICES;
+  const mapped = (data || []).map(s => ({ ...s, desc: s.description }));
+  return mapped && mapped.length > 0 ? mapped : INITIAL_SERVICES;
 };
 
 const fetchPricingFromSupabase = async () => {
@@ -708,7 +709,7 @@ const fetchPricingFromSupabase = async () => {
     return INITIAL_PRICING;
   }
 
-  return (data || []).map(p => {
+  const mapped = (data || []).map(p => {
     let features = [];
     try {
       features = typeof p.features === "string" ? JSON.parse(p.features) : (Array.isArray(p.features) ? p.features : []);
@@ -716,7 +717,8 @@ const fetchPricingFromSupabase = async () => {
       features = typeof p.features === "string" ? p.features.split(",").map(f => f.trim()) : (Array.isArray(p.features) ? p.features : []);
     }
     return { ...p, features };
-  }) || INITIAL_PRICING;
+  });
+  return mapped && mapped.length > 0 ? mapped : INITIAL_PRICING;
 };
 
 function AdminPanel({ projects, setProjects, services, setServices, plans, setPlans, onClose }) {
