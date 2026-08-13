@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import emailjs from "@emailjs/browser";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+const supabase = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 // ─── BRIVON-STYLE THEME ───────────────────────────────────────────────────────
 const T = {
@@ -649,19 +657,30 @@ const INITIAL_PRICING = [
   { id: 3, name: "Enterprise", price: "Custom", sub: "Large-scale systems and platforms", features: ["Full system architecture","AI/ML integration available","Cloud deployment (AWS/GCP)","Dedicated team","12 months SLA support","Ongoing product scaling"], featured: false },
 ];
 
-const STORAGE_KEYS = {
-  projects: "nexabytes-projects",
-  services: "nexabytes-services",
-  plans: "nexabytes-plans",
-};
+const normalizeProject = (project) => ({
+  ...project,
+  desc: project.description ?? project.desc ?? "",
+  tags: Array.isArray(project.tags)
+    ? project.tags
+    : typeof project.tags === "string"
+      ? project.tags.split(",").map(tag => tag.trim()).filter(Boolean)
+      : [],
+});
 
-const readStoredData = (key, fallback) => {
-  try {
-    const saved = localStorage.getItem(key);
-    return saved ? JSON.parse(saved) : fallback;
-  } catch (error) {
-    return fallback;
+const fetchProjectsFromSupabase = async () => {
+  if (!supabase) return INITIAL_PROJECTS;
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select("id, title, tags, description, impact, img, demo, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Supabase fetch error:", error.message);
+    return INITIAL_PROJECTS;
   }
+
+  return (data || []).map(normalizeProject);
 };
 
 function AdminPanel({ projects, setProjects, services, setServices, plans, setPlans, onClose }) {
@@ -676,12 +695,50 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
   const [editPlanFeatures, setEditPlanFeatures] = useState("");
 
   const login = () => { if (pw === ADMIN_PASSWORD) { setAuthed(true); setPwErr(false); } else setPwErr(true); };
-  const addProject = () => {
+  const addProject = async () => {
     if (!newProj.title || !newProj.desc) { alert("Title and description required."); return; }
-    setProjects(ps => [...ps, { ...newProj, id: Date.now(), tags: newProj.tags.split(",").map(t => t.trim()).filter(Boolean) }]);
+
+    const payload = {
+      title: newProj.title,
+      tags: newProj.tags.split(",").map(t => t.trim()).filter(Boolean),
+      description: newProj.desc,
+      impact: newProj.impact,
+      img: newProj.img,
+      demo: newProj.demo,
+    };
+
+    if (!supabase) {
+      setProjects(ps => [...ps, { ...payload, id: Date.now(), tags: payload.tags }]);
+      setNewProj({ title: "", tags: "", desc: "", impact: "", img: "", demo: "" });
+      return;
+    }
+
+    const { data, error } = await supabase.from("projects").insert([payload]).select();
+
+    if (error) {
+      alert("Failed to save project: " + error.message);
+      return;
+    }
+
+    if (data && data[0]) {
+      setProjects(ps => [normalizeProject(data[0]), ...ps]);
+    }
+
     setNewProj({ title: "", tags: "", desc: "", impact: "", img: "", demo: "" });
   };
-  const deleteProject = id => { if (window.confirm("Delete this project?")) setProjects(ps => ps.filter(p => p.id !== id)); };
+  const deleteProject = async id => {
+    if (!window.confirm("Delete this project?")) return;
+
+    if (supabase) {
+      const { error } = await supabase.from("projects").delete().eq("id", id);
+      if (error) {
+        alert("Failed to delete project: " + error.message);
+        return;
+      }
+    }
+
+    setProjects(ps => ps.filter(p => p.id !== id));
+  };
   const addService = () => {
     if (!newSvc.title) { alert("Title required."); return; }
     setServices(ss => [...ss, { ...newSvc, id: Date.now() }]);
@@ -897,22 +954,22 @@ function BackToTop() {
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [projects, setProjects] = useState(() => readStoredData(STORAGE_KEYS.projects, INITIAL_PROJECTS));
-  const [services, setServices] = useState(() => readStoredData(STORAGE_KEYS.services, INITIAL_SERVICES));
-  const [plans, setPlans] = useState(() => readStoredData(STORAGE_KEYS.plans, INITIAL_PRICING));
+  const [projects, setProjects] = useState(INITIAL_PROJECTS);
+  const [services, setServices] = useState(INITIAL_SERVICES);
+  const [plans, setPlans] = useState(INITIAL_PRICING);
   const [adminOpen, setAdminOpen] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.projects, JSON.stringify(projects));
-  }, [projects]);
+    let active = true;
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.services, JSON.stringify(services));
-  }, [services]);
+    const loadProjects = async () => {
+      const result = await fetchProjectsFromSupabase();
+      if (active) setProjects(result);
+    };
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.plans, JSON.stringify(plans));
-  }, [plans]);
+    loadProjects();
+    return () => { active = false; };
+  }, []);
 
   return (
     <div style={{ background: T.charcoal, color: T.white, minHeight: "100vh" }}>
