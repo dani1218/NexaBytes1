@@ -783,8 +783,15 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
     const serviceToSave = { icon: newService.icon, title: newService.title, description: newService.desc, id: newService.id };
     
     if (supabase) {
-      const { error } = await supabase.from("services").insert([serviceToSave]);
-      if (error) { console.error("Save error:", error.message); return; }
+      try {
+        const { error } = await supabase.from("services").insert([serviceToSave]);
+        if (error) { alert("Error saving service: " + error.message); console.error(error); return; }
+        alert("Service added successfully!");
+      } catch (err) {
+        alert("Error: " + err.message);
+        console.error(err);
+        return;
+      }
     }
     
     setServices(ss => [...ss, newService]);
@@ -794,8 +801,14 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
     if (!window.confirm("Delete this service?")) return;
     
     if (supabase) {
-      const { error } = await supabase.from("services").delete().eq("id", id);
-      if (error) { console.error("Delete error:", error.message); return; }
+      try {
+        const { error } = await supabase.from("services").delete().eq("id", id);
+        if (error) { alert("Error deleting: " + error.message); console.error(error); return; }
+      } catch (err) {
+        alert("Error: " + err.message);
+        console.error(err);
+        return;
+      }
     }
     
     setServices(ss => ss.filter(s => s.id !== id));
@@ -803,8 +816,15 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
   const saveService = async () => {
     if (supabase && editSvc) {
       const serviceToSave = { icon: editSvc.icon, title: editSvc.title, description: editSvc.desc };
-      const { error } = await supabase.from("services").update(serviceToSave).eq("id", editSvc.id);
-      if (error) { console.error("Save error:", error.message); return; }
+      try {
+        const { error } = await supabase.from("services").update(serviceToSave).eq("id", editSvc.id);
+        if (error) { alert("Error saving service: " + error.message); console.error(error); return; }
+        alert("Service updated successfully!");
+      } catch (err) {
+        alert("Error: " + err.message);
+        console.error(err);
+        return;
+      }
     }
     
     setServices(ss => ss.map(s => s.id === editSvc.id ? editSvc : s));
@@ -817,8 +837,15 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
     
     if (supabase) {
       const planToSave = { name: updatedPlan.name, price: updatedPlan.price, sub: updatedPlan.sub, features: JSON.stringify(featuresArray), featured: updatedPlan.featured };
-      const { error } = await supabase.from("pricing").update(planToSave).eq("id", updatedPlan.id);
-      if (error) { console.error("Save error:", error.message); return; }
+      try {
+        const { error } = await supabase.from("pricing").update(planToSave).eq("id", updatedPlan.id);
+        if (error) { alert("Error saving plan: " + error.message); console.error(error); return; }
+        alert("Plan updated successfully!");
+      } catch (err) {
+        alert("Error: " + err.message);
+        console.error(err);
+        return;
+      }
     }
     
     setPlans(ps => ps.map(p => p.id === editPlan.id ? updatedPlan : p));
