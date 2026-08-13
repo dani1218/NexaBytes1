@@ -721,6 +721,35 @@ const fetchPricingFromSupabase = async () => {
   return mapped && mapped.length > 0 ? mapped : INITIAL_PRICING;
 };
 
+// Seed Supabase tables if empty
+const seedSupabaseServices = async () => {
+  if (!supabase) return;
+  try {
+    const { data, error } = await supabase.from("services").select("id", { count: "exact", head: true });
+    if (!error && data && data.length === 0) {
+      const servicesToInsert = INITIAL_SERVICES.map(s => ({ icon: s.icon, title: s.title, description: s.desc }));
+      await supabase.from("services").insert(servicesToInsert);
+      console.log("Services seeded to Supabase");
+    }
+  } catch (err) {
+    console.error("Seed services error:", err);
+  }
+};
+
+const seedSupabasePricing = async () => {
+  if (!supabase) return;
+  try {
+    const { data, error } = await supabase.from("pricing").select("id", { count: "exact", head: true });
+    if (!error && data && data.length === 0) {
+      const pricingToInsert = INITIAL_PRICING.map(p => ({ name: p.name, price: p.price, sub: p.sub, features: JSON.stringify(p.features), featured: p.featured }));
+      await supabase.from("pricing").insert(pricingToInsert);
+      console.log("Pricing seeded to Supabase");
+    }
+  } catch (err) {
+    console.error("Seed pricing error:", err);
+  }
+};
+
 function AdminPanel({ projects, setProjects, services, setServices, plans, setPlans, onClose }) {
   const [authed, setAuthed] = useState(false);
   const [pw, setPw] = useState("");
@@ -780,16 +809,14 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
   const addService = async () => {
     if (!newSvc.title) { alert("Title required."); return; }
     const newService = { ...newSvc, id: Date.now() };
-    const serviceToSave = { icon: newService.icon, title: newService.title, description: newService.desc, id: newService.id };
     
     if (supabase) {
       try {
+        const serviceToSave = { icon: newSvc.icon, title: newSvc.title, description: newSvc.desc };
         const { error } = await supabase.from("services").insert([serviceToSave]);
-        if (error) { alert("Error saving service: " + error.message); console.error(error); return; }
-        alert("Service added successfully!");
+        if (error) { console.error("Save error:", error); return; }
       } catch (err) {
-        alert("Error: " + err.message);
-        console.error(err);
+        console.error("Error:", err);
         return;
       }
     }
@@ -803,10 +830,9 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
     if (supabase) {
       try {
         const { error } = await supabase.from("services").delete().eq("id", id);
-        if (error) { alert("Error deleting: " + error.message); console.error(error); return; }
+        if (error) { console.error("Delete error:", error); return; }
       } catch (err) {
-        alert("Error: " + err.message);
-        console.error(err);
+        console.error("Error:", err);
         return;
       }
     }
@@ -818,11 +844,9 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
       const serviceToSave = { icon: editSvc.icon, title: editSvc.title, description: editSvc.desc };
       try {
         const { error } = await supabase.from("services").update(serviceToSave).eq("id", editSvc.id);
-        if (error) { alert("Error saving service: " + error.message); console.error(error); return; }
-        alert("Service updated successfully!");
+        if (error) { console.error("Save error:", error); return; }
       } catch (err) {
-        alert("Error: " + err.message);
-        console.error(err);
+        console.error("Error:", err);
         return;
       }
     }
@@ -839,11 +863,9 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
       const planToSave = { name: updatedPlan.name, price: updatedPlan.price, sub: updatedPlan.sub, features: JSON.stringify(featuresArray), featured: updatedPlan.featured };
       try {
         const { error } = await supabase.from("pricing").update(planToSave).eq("id", updatedPlan.id);
-        if (error) { alert("Error saving plan: " + error.message); console.error(error); return; }
-        alert("Plan updated successfully!");
+        if (error) { console.error("Save error:", error); return; }
       } catch (err) {
-        alert("Error: " + err.message);
-        console.error(err);
+        console.error("Error:", err);
         return;
       }
     }
@@ -1063,6 +1085,10 @@ export default function App() {
     let active = true;
 
     const loadData = async () => {
+      // Seed Supabase tables if empty
+      await seedSupabaseServices();
+      await seedSupabasePricing();
+
       const [projectsResult, servicesResult, pricingResult] = await Promise.all([
         fetchProjectsFromSupabase(),
         fetchServicesFromSupabase(),
