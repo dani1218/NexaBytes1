@@ -679,6 +679,41 @@ const fetchProjectsFromSupabase = async () => {
   return (data || []).map(normalizeProject);
 };
 
+const fetchServicesFromSupabase = async () => {
+  if (!supabase) return INITIAL_SERVICES;
+
+  const { data, error } = await supabase
+    .from("services")
+    .select("id, icon, title, desc")
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error("Supabase fetch error:", error.message);
+    return INITIAL_SERVICES;
+  }
+
+  return data || INITIAL_SERVICES;
+};
+
+const fetchPricingFromSupabase = async () => {
+  if (!supabase) return INITIAL_PRICING;
+
+  const { data, error } = await supabase
+    .from("pricing")
+    .select("id, name, price, sub, features, featured")
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error("Supabase fetch error:", error.message);
+    return INITIAL_PRICING;
+  }
+
+  return (data || []).map(p => ({
+    ...p,
+    features: Array.isArray(p.features) ? p.features : (typeof p.features === "string" ? p.features.split(",").map(f => f.trim()) : [])
+  })) || INITIAL_PRICING;
+};
+
 function AdminPanel({ projects, setProjects, services, setServices, plans, setPlans, onClose }) {
   const [authed, setAuthed] = useState(false);
   const [pw, setPw] = useState("");
@@ -735,16 +770,47 @@ function AdminPanel({ projects, setProjects, services, setServices, plans, setPl
 
     setProjects(ps => ps.filter(p => p.id !== id));
   };
-  const addService = () => {
+  const addService = async () => {
     if (!newSvc.title) { alert("Title required."); return; }
-    setServices(ss => [...ss, { ...newSvc, id: Date.now() }]);
+    const newService = { ...newSvc, id: Date.now() };
+    
+    if (supabase) {
+      const { error } = await supabase.from("services").insert([newService]);
+      if (error) { console.error("Save error:", error.message); return; }
+    }
+    
+    setServices(ss => [...ss, newService]);
     setNewSvc({ icon: "", title: "", desc: "" });
   };
-  const deleteService = id => { if (window.confirm("Delete this service?")) setServices(ss => ss.filter(s => s.id !== id)); };
-  const saveService = () => { setServices(ss => ss.map(s => s.id === editSvc.id ? editSvc : s)); setEditSvc(null); };
+  const deleteService = async id => {
+    if (!window.confirm("Delete this service?")) return;
+    
+    if (supabase) {
+      const { error } = await supabase.from("services").delete().eq("id", id);
+      if (error) { console.error("Delete error:", error.message); return; }
+    }
+    
+    setServices(ss => ss.filter(s => s.id !== id));
+  };
+  const saveService = async () => {
+    if (supabase && editSvc) {
+      const { error } = await supabase.from("services").update(editSvc).eq("id", editSvc.id);
+      if (error) { console.error("Save error:", error.message); return; }
+    }
+    
+    setServices(ss => ss.map(s => s.id === editSvc.id ? editSvc : s));
+    setEditSvc(null);
+  };
   const startEditPlan = plan => { setEditPlan({ ...plan }); setEditPlanFeatures(plan.features.join("\n")); };
-  const savePlan = () => {
-    setPlans(ps => ps.map(p => p.id === editPlan.id ? { ...editPlan, features: editPlanFeatures.split("\n").map(f => f.trim()).filter(Boolean) } : p));
+  const savePlan = async () => {
+    const updatedPlan = { ...editPlan, features: editPlanFeatures.split("\n").map(f => f.trim()).filter(Boolean) };
+    
+    if (supabase) {
+      const { error } = await supabase.from("pricing").update(updatedPlan).eq("id", editPlan.id);
+      if (error) { console.error("Save error:", error.message); return; }
+    }
+    
+    setPlans(ps => ps.map(p => p.id === editPlan.id ? updatedPlan : p));
     setEditPlan(null); setEditPlanFeatures("");
   };
 
@@ -958,12 +1024,21 @@ export default function App() {
   useEffect(() => {
     let active = true;
 
-    const loadProjects = async () => {
-      const result = await fetchProjectsFromSupabase();
-      if (active) setProjects(result);
+    const loadData = async () => {
+      const [projectsResult, servicesResult, pricingResult] = await Promise.all([
+        fetchProjectsFromSupabase(),
+        fetchServicesFromSupabase(),
+        fetchPricingFromSupabase()
+      ]);
+      
+      if (active) {
+        setProjects(projectsResult);
+        setServices(servicesResult);
+        setPlans(pricingResult);
+      }
     };
 
-    loadProjects();
+    loadData();
     return () => { active = false; };
   }, []);
 
