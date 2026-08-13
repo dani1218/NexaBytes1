@@ -635,11 +635,7 @@ function Footer() {
 // ─── ADMIN PANEL ──────────────────────────────────────────────────────────────
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
 
-const INITIAL_PROJECTS = [
-  { id: 1, title: "Chicken House", tags: ["React 19", "TypeScript", "Tailwind", "Vite"], desc: "Digital food ordering platform with live order tracking, modern UI, and fast frontend performance.", impact: "⚡ Realtime orders, delivery tracking, smooth mobile-first ordering", img: "https://images.pexels.com/photos/19252769/pexels-photo-19252769.jpeg", demo: "https://chicken-house-rust.vercel.app/" },
-  { id: 2, title: "AI Recruitment Engine", tags: ["Python", "TensorFlow", "React", "Node.js"], desc: "Intelligent matching engine that analyses CVs and ranks candidates against job requirements in real time.", impact: "✅ 40% reduction in shortlisting time for enterprise HR teams", img: "https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg", demo: "#contact" },
-  { id: 3, title: "Smart Parking System", tags: ["Java Spring Boot", "Docker", "React", "IoT"], desc: "Real-time containerized smart parking management system with sensor integration and live dashboard.", impact: "✅ Full production deployment, zero downtime", img: "https://images.pexels.com/photos/1004409/pexels-photo-1004409.jpeg", demo: "#contact" },
-];
+const INITIAL_PROJECTS = [];
 
 const INITIAL_SERVICES = [
   { id: 1, icon: "⚙️", title: "Custom Business Software & Automation", desc: "Tailor-made solutions built around your exact workflow. Scalable architecture that grows with your business." },
