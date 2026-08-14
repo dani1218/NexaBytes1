@@ -79,6 +79,7 @@ const GlobalCSS = () => (
     }
     
     @media (max-width: 768px) {
+      #hero { min-height: clamp(500px, 80vh, 100vh) !important; }
       .two-col { grid-template-columns: 1fr !important; gap: 40px !important; }
       .three-col { grid-template-columns: 1fr !important; gap: 20px !important; }
       .four-col { grid-template-columns: 1fr !important; gap: 24px !important; }
@@ -103,6 +104,7 @@ const GlobalCSS = () => (
     @media (max-width: 480px) {
       :root { font-size: 14px; }
       
+      #hero { min-height: 550px !important; }
       h1 { font-size: 28px !important; margin: 16px 0 !important; }
       h2 { font-size: 16px !important; }
       
@@ -186,7 +188,7 @@ function Navbar({ onAdmin }) {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 clamp(16px, 5vw, 40px) clamp(40px, 10vw, 80px)`, maxWidth: 1400, margin: "0 auto", paddingTop: "clamp(80px, 15vw, 120px)" }}>
+    <section id="hero" style={{ minHeight: "clamp(600px, 100vh, 100vh)", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 clamp(16px, 5vw, 40px) clamp(40px, 10vw, 80px)`, maxWidth: 1400, margin: "0 auto", paddingTop: "clamp(80px, 15vw, 120px)" }}>
       {/* Main headline */}
       <div style={{ marginBottom: "clamp(30px, 8vw, 60px)" }}>
         <h1 className="big-title" style={{ fontSize: "clamp(2rem, 10vw, 7rem)", marginBottom: "clamp(16px, 5vw, 32px)" }}>
