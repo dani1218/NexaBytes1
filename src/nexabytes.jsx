@@ -70,16 +70,67 @@ const GlobalCSS = () => (
 
     .num-label { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.18em; color: ${T.lime}; margin-bottom: 8px; display: block; }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       .nav-desktop { display: none !important; }
       .hamburger { display: flex !important; }
-      .hero-grid { grid-template-columns: 1fr !important; }
-      .two-col { grid-template-columns: 1fr !important; }
-      .three-col { grid-template-columns: 1fr !important; }
-      .four-col { grid-template-columns: 1fr 1fr !important; }
     }
-    @media (min-width: 769px) {
+    @media (min-width: 1025px) {
       .hamburger { display: none !important; }
+    }
+    
+    @media (max-width: 768px) {
+      .two-col { grid-template-columns: 1fr !important; gap: 40px !important; }
+      .three-col { grid-template-columns: 1fr !important; gap: 20px !important; }
+      .four-col { grid-template-columns: 1fr !important; gap: 24px !important; }
+      .hero-grid { grid-template-columns: 1fr !important; }
+      
+      /* Responsive section padding */
+      section { padding: 60px 20px !important; }
+      
+      /* Navbar adjustments */
+      .nav-desktop { padding: 0 20px; }
+      
+      /* Grid column adjustments for services */
+      [style*="gridTemplateColumns: \"80px 1fr 1fr auto"] { grid-template-columns: 1fr !important; gap: 16px !important; }
+      
+      /* Project cards */
+      [style*="gridTemplateColumns: \"repeat(auto-fill, minmax(340px"] { grid-template-columns: 1fr !important; }
+      
+      /* Footer columns */
+      [style*="gridTemplateColumns: \"2fr 1fr 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 32px !important; }
+    }
+    
+    @media (max-width: 480px) {
+      :root { font-size: 14px; }
+      
+      h1 { font-size: 28px !important; margin: 16px 0 !important; }
+      h2 { font-size: 16px !important; }
+      
+      section { padding: 40px 16px !important; }
+      
+      .big-title { font-size: clamp(1.8rem, 5vw, 3rem) !important; }
+      .section-sub { max-width: 100% !important; }
+      
+      /* Navbar for mobile */
+      nav { padding: 0 16px !important; }
+      .navbar-container { padding: 0 0 !important; height: 60px !important; }
+      
+      /* Mobile menu adjustments */
+      [style*="position: \"fixed\", top: 72"] { padding: 16px !important; top: 60px !important; }
+      
+      /* Button sizing */
+      button { padding: 10px 16px !important; font-size: 0.75rem !important; }
+      
+      /* Flex wrapping */
+      [style*="display: \"flex\", gap: 40"] { gap: 16px !important; flex-direction: column !important; }
+      [style*="display: \"flex\", gap: 80"] { gap: 24px !important; flex-direction: column !important; }
+      [style*="display: \"flex\", gap: 32"] { gap: 16px !important; flex-direction: column !important; }
+      
+      /* Contact form columns */
+      [style*="gridTemplateColumns: \"1fr 1fr\", gap"] { grid-template-columns: 1fr !important; gap: 0 !important; }
+      
+      /* Stats grid */
+      [style*="display: \"flex\", justifyContent: \"space-between\", alignItems: \"flex-start\", marginBottom: 40"] { flex-direction: column !important; gap: 20px !important; }
     }
   `}</style>
 );
@@ -98,7 +149,7 @@ function Navbar({ onAdmin }) {
   return (
     <>
       <nav style={{ position: "fixed", top: 0, width: "100%", zIndex: 200, background: scrolled ? "rgba(26,26,26,0.96)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? `1px solid ${T.charcoal3}` : "none", transition: "all 0.3s" }}>
-        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 40px", height: 72, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 clamp(16px, 5vw, 40px)", height: "clamp(60px, 12vw, 72px)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           {/* Logo */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <span style={{ fontSize: "1.3rem", fontWeight: 900, color: T.white, letterSpacing: "-0.04em" }}>
@@ -135,33 +186,31 @@ function Navbar({ onAdmin }) {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "0 40px 80px", maxWidth: 1400, margin: "0 auto", paddingTop: 120 }}>
+    <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 clamp(16px, 5vw, 40px) clamp(40px, 10vw, 80px)`, maxWidth: 1400, margin: "0 auto", paddingTop: "clamp(80px, 15vw, 120px)" }}>
       {/* Main headline */}
-      <div style={{ marginBottom: 60 }}>
-        <h1 className="big-title" style={{ fontSize: "clamp(3rem, 8vw, 7rem)", marginBottom: 32 }}>
+      <div style={{ marginBottom: "clamp(30px, 8vw, 60px)" }}>
+        <h1 className="big-title" style={{ fontSize: "clamp(2rem, 10vw, 7rem)", marginBottom: "clamp(16px, 5vw, 32px)" }}>
           We build software<br />
           the business, not<br />
           <span className="accent">/ the brief.</span>
         </h1>
-        <div style={{ display: "flex", gap: 40, alignItems: "flex-start", flexWrap: "wrap" }}>
-          <p style={{ fontSize: "1rem", color: T.muted, lineHeight: 1.8, maxWidth: 480 }}>
+        <div style={{ display: "flex", gap: "clamp(16px, 5vw, 40px)", alignItems: "flex-start", flexWrap: "wrap" }}>
+          <p style={{ fontSize: "clamp(0.85rem, 2vw, 1rem)", color: T.muted, lineHeight: 1.8, maxWidth: 480 }}>
             NEXABYTES is a premium software development agency. We build AI systems, web apps, mobile apps, and enterprise software for startups and businesses that care about craft   not just shipping.
           </p>
-          <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0 }}>
-            <button className="btn-lime" onClick={() => document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })} style={{ background: T.lime, color: T.charcoal, border: "none", padding: "14px 32px", borderRadius: 4, fontSize: "0.9rem", fontWeight: 800, cursor: "pointer", transition: "all 0.2s" }}>See our work →</button>
-            <button className="btn-outline" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} style={{ background: "transparent", color: T.white, border: `1px solid ${T.charcoal3}`, padding: "13px 28px", borderRadius: 4, fontSize: "0.9rem", fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>Start a project</button>
+          <div style={{ display: "flex", gap: "clamp(8px, 2vw, 12px)", alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
+            <button className="btn-lime" onClick={() => document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })} style={{ background: T.lime, color: T.charcoal, border: "none", padding: "clamp(10px, 2vw, 14px) clamp(20px, 5vw, 32px)", borderRadius: 4, fontSize: "clamp(0.75rem, 2vw, 0.9rem)", fontWeight: 800, cursor: "pointer", transition: "all 0.2s" }}>See our work →</button>
+            <button className="btn-outline" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} style={{ background: "transparent", color: T.white, border: `1px solid ${T.charcoal3}`, padding: "clamp(10px, 2vw, 13px) clamp(18px, 4vw, 28px)", borderRadius: 4, fontSize: "clamp(0.75rem, 2vw, 0.9rem)", fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>Start a project</button>
           </div>
         </div>
 
         {/* Stats row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 40, flexWrap: "wrap", gap: 20 }}>
-          <div>
-            {/* <span className="section-eyebrow">Islamabad · Pakistan · est. 2024</span> */}
-          </div>
-          <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "clamp(12px, 3vw, 20px)", marginBottom: "clamp(20px, 5vw, 40px)" }}>
+          <div />
+          <div style={{ display: "flex", gap: "clamp(20px, 5vw, 40px)", flexWrap: "wrap" }}>
             {[["30+","Projects Delivered"],["100%","Client Satisfaction"],["<24h","Response Time"]].map(([n, l]) => (
               <div key={l} style={{ textAlign: "right" }}>
-                <span className="stat-num" style={{ fontSize: "1.6rem" }}>{n}</span>
+                <span className="stat-num" style={{ fontSize: "clamp(1.2rem, 4vw, 1.8rem)" }}>{n}</span>
                 <span className="stat-label">{l}</span>
               </div>
             ))}
@@ -170,9 +219,9 @@ function Hero() {
       </div>
 
       {/* Bottom divider row */}
-      <div style={{ borderTop: `1px solid ${T.charcoal3}`, paddingTop: 28, display: "flex", gap: 32, flexWrap: "wrap" }}>
+      <div style={{ borderTop: `1px solid ${T.charcoal3}`, paddingTop: "clamp(16px, 4vw, 28px)", display: "flex", gap: "clamp(12px, 3vw, 32px)", flexWrap: "wrap" }}>
         {["Custom Software","Web Applications","Mobile Apps","AI & Machine Learning","APIs & Cloud","Enterprise Solutions"].map(s => (
-          <span key={s} style={{ fontSize: "0.75rem", color: T.muted, textTransform: "uppercase", letterSpacing: "0.1em" }}>{s}</span>
+          <span key={s} style={{ fontSize: "clamp(0.6rem, 1.5vw, 0.75rem)", color: T.muted, textTransform: "uppercase", letterSpacing: "0.1em" }}>{s}</span>
         ))}
       </div>
     </section>
@@ -182,8 +231,8 @@ function Hero() {
 // ─── SERVICES ─────────────────────────────────────────────────────────────────
 function Services({ services }) {
   return (
-    <section id="services" style={{ padding: "120px 40px", maxWidth: 1400, margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 72, flexWrap: "wrap", gap: 24 }}>
+    <section id="services" style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 40px)", maxWidth: 1400, margin: "0 auto" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "clamp(40px, 8vw, 72px)", flexWrap: "wrap", gap: "clamp(16px, 5vw, 24px)" }}>
         <div>
           <span className="section-eyebrow">What we do</span>
           <h2 className="big-title">Five disciplines.<br /><span className="accent">One team.</span></h2>
@@ -195,11 +244,15 @@ function Services({ services }) {
 
       <div style={{ display: "grid", gap: 1, borderTop: `1px solid ${T.charcoal3}` }}>
         {services.map((s, i) => (
-          <div key={s.id} className="card-hover" style={{ display: "grid", gridTemplateColumns: "80px 1fr 1fr auto", alignItems: "center", gap: 40, padding: "36px 0", borderBottom: `1px solid ${T.charcoal3}`, transition: "all 0.25s", cursor: "default" }}>
+          <div key={s.id} className="card-hover" style={{ display: "grid", gridTemplateColumns: "clamp(60px, 15vw, 80px) 1fr", gap: "clamp(16px, 5vw, 40px)", padding: "clamp(20px, 5vw, 36px) 0", borderBottom: `1px solid ${T.charcoal3}`, transition: "all 0.25s", cursor: "default", alignItems: "start" }}>
             <span className="num-label" style={{ marginBottom: 0 }}>{String(i + 1).padStart(2, "0")}</span>
-            <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: T.white, lineHeight: 1.4 }}>{s.title}</h3>
-            <p style={{ fontSize: "0.85rem", color: T.muted, lineHeight: 1.7 }}>{s.desc}</p>
-            <span style={{ fontSize: "1.8rem" }}>{s.icon}</span>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "clamp(12px, 3vw, 20px)", marginBottom: "clamp(8px, 2vw, 16px)" }}>
+                <h3 style={{ fontSize: "clamp(0.95rem, 2vw, 1.05rem)", fontWeight: 700, color: T.white, lineHeight: 1.4 }}>{s.title}</h3>
+                <span style={{ fontSize: "clamp(1.4rem, 3vw, 1.8rem)", flexShrink: 0 }}>{s.icon}</span>
+              </div>
+              <p style={{ fontSize: "clamp(0.8rem, 1.5vw, 0.85rem)", color: T.muted, lineHeight: 1.7 }}>{s.desc}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -210,9 +263,9 @@ function Services({ services }) {
 // ─── PORTFOLIO ────────────────────────────────────────────────────────────────
 function Portfolio({ projects }) {
   return (
-    <section id="portfolio" style={{ padding: "120px 40px", background: T.charcoal2, borderTop: `1px solid ${T.charcoal3}`, borderBottom: `1px solid ${T.charcoal3}` }}>
+    <section id="portfolio" style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 40px)", background: T.charcoal2, borderTop: `1px solid ${T.charcoal3}`, borderBottom: `1px solid ${T.charcoal3}` }}>
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 72, flexWrap: "wrap", gap: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "clamp(40px, 8vw, 72px)", flexWrap: "wrap", gap: "clamp(16px, 5vw, 24px)" }}>
           <div>
             <span className="section-eyebrow">Selected work · 2024–25</span>
             <h2 className="big-title">Projects we're<br /><span className="accent">proud of.</span></h2>
@@ -222,10 +275,10 @@ function Portfolio({ projects }) {
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 2 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(300px, 50vw, 340px), 1fr))", gap: 2 }}>
           {projects.map((p, i) => (
             <div key={p.id} className="project-card" style={{ background: T.charcoal, border: `1px solid ${T.charcoal3}`, transition: "all 0.25s", overflow: "hidden" }}>
-              <div style={{ position: "relative", overflow: "hidden", height: 240 }}>
+              <div style={{ position: "relative", overflow: "hidden", height: "clamp(180px, 40vw, 240px)" }}>
                 <img src={p.img} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(20%)", transition: "transform 0.4s, filter 0.4s" }}
                   onMouseEnter={e => { e.target.style.transform = "scale(1.04)"; e.target.style.filter = "grayscale(0%)"; }}
                   onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.filter = "grayscale(20%)"; }}
@@ -235,27 +288,27 @@ function Portfolio({ projects }) {
                   <span style={{ background: T.lime, color: T.charcoal, fontSize: "0.62rem", fontWeight: 800, padding: "4px 10px", letterSpacing: "0.1em", textTransform: "uppercase" }}>No. {String(i + 1).padStart(3, "0")}</span>
                 </div>
               </div>
-              <div style={{ padding: "28px 24px" }}>
+              <div style={{ padding: "clamp(16px, 4vw, 28px)" }}>
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
                   {p.tags.map(t => (
                     <span key={t} style={{ fontSize: "0.65rem", fontWeight: 700, color: T.lime, textTransform: "uppercase", letterSpacing: "0.1em", border: `1px solid ${T.charcoal3}`, padding: "3px 8px" }}>{t}</span>
                   ))}
                 </div>
-                <h3 className="proj-title" style={{ fontSize: "1.1rem", fontWeight: 800, color: T.white, marginBottom: 10, transition: "color 0.2s" }}>{p.title}</h3>
-                <p style={{ fontSize: "0.83rem", color: T.muted, lineHeight: 1.7, marginBottom: 16 }}>{p.desc}</p>
-                <div style={{ fontSize: "0.78rem", color: T.lime, fontWeight: 600, marginBottom: 20 }}>{p.impact}</div>
-                <div style={{ display: "flex", gap: 10, borderTop: `1px solid ${T.charcoal3}`, paddingTop: 18 }}>
-                  <button className="btn-lime" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} style={{ background: T.lime, color: T.charcoal, border: "none", padding: "9px 20px", fontSize: "0.78rem", fontWeight: 800, cursor: "pointer", transition: "all 0.2s", borderRadius: 3 }}>Case Study</button>
-                  <a href={p.demo} target="_blank" rel="noreferrer" className="btn-outline" style={{ background: "transparent", color: T.mutedLight, border: `1px solid ${T.charcoal3}`, padding: "8px 18px", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", transition: "all 0.2s", textDecoration: "none", borderRadius: 3, display: "inline-flex", alignItems: "center" }}>Live Demo ↗</a>
+                <h3 className="proj-title" style={{ fontSize: "clamp(0.95rem, 2vw, 1.1rem)", fontWeight: 800, color: T.white, marginBottom: 10, transition: "color 0.2s" }}>{p.title}</h3>
+                <p style={{ fontSize: "clamp(0.75rem, 1.5vw, 0.83rem)", color: T.muted, lineHeight: 1.7, marginBottom: 16 }}>{p.desc}</p>
+                <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 0.78rem)", color: T.lime, fontWeight: 600, marginBottom: 20 }}>{p.impact}</div>
+                <div style={{ display: "flex", gap: 10, borderTop: `1px solid ${T.charcoal3}`, paddingTop: 18, flexWrap: "wrap" }}>
+                  <button className="btn-lime" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} style={{ background: T.lime, color: T.charcoal, border: "none", padding: "clamp(8px, 2vw, 9px) clamp(16px, 3vw, 20px)", fontSize: "clamp(0.7rem, 1.5vw, 0.78rem)", fontWeight: 800, cursor: "pointer", transition: "all 0.2s", borderRadius: 3 }}>Case Study</button>
+                  <a href={p.demo} target="_blank" rel="noreferrer" className="btn-outline" style={{ background: "transparent", color: T.mutedLight, border: `1px solid ${T.charcoal3}`, padding: "clamp(8px, 2vw, 8px) clamp(14px, 3vw, 18px)", fontSize: "clamp(0.7rem, 1.5vw, 0.78rem)", fontWeight: 600, cursor: "pointer", transition: "all 0.2s", textDecoration: "none", borderRadius: 3, display: "inline-flex", alignItems: "center" }}>Live Demo ↗</a>
                 </div>
               </div>
             </div>
           ))}
           {/* CTA Card */}
-          <div style={{ background: T.lime, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "60px 32px", textAlign: "center", minHeight: 300, cursor: "pointer" }} onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
+          <div style={{ background: T.lime, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "clamp(30px, 8vw, 60px)", textAlign: "center", minHeight: "clamp(250px, 50vw, 300px)", cursor: "pointer" }} onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
             <span style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.2em", color: T.charcoal, marginBottom: 20, display: "block" }}>Your project</span>
-            <h3 style={{ fontSize: "2rem", fontWeight: 900, color: T.charcoal, lineHeight: 1.15, marginBottom: 24, letterSpacing: "-0.03em" }}>Ready to build something great?</h3>
-            <span style={{ fontSize: "0.9rem", fontWeight: 800, color: T.charcoal }}>Start a conversation →</span>
+            <h3 style={{ fontSize: "clamp(1.4rem, 4vw, 2rem)", fontWeight: 900, color: T.charcoal, lineHeight: 1.15, marginBottom: 24, letterSpacing: "-0.03em" }}>Ready to build something great?</h3>
+            <span style={{ fontSize: "clamp(0.8rem, 2vw, 0.9rem)", fontWeight: 800, color: T.charcoal }}>Start a conversation →</span>
           </div>
         </div>
       </div>
@@ -266,39 +319,39 @@ function Portfolio({ projects }) {
 // ─── ABOUT / STUDIO ───────────────────────────────────────────────────────────
 function About() {
   return (
-    <section id="about" style={{ padding: "120px 40px", maxWidth: 1400, margin: "0 auto" }}>
-      <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "start" }}>
+    <section id="about" style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 40px)", maxWidth: 1400, margin: "0 auto" }}>
+      <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(40px, 8vw, 80px)", alignItems: "start" }}>
         <div>
           <span className="section-eyebrow">Chapter 01</span>
           <h2 className="big-title">A studio that treats<br /><span className="accent">each line as craft.</span></h2>
           <div className="divider" />
-          <p style={{ fontSize: "0.95rem", color: T.muted, lineHeight: 1.85, marginBottom: 20 }}>
+          <p style={{ fontSize: "clamp(0.85rem, 2vw, 0.95rem)", color: T.muted, lineHeight: 1.85, marginBottom: 20 }}>
             Founded in 2024, NEXABYTES is a technology-driven software company dedicated to building innovative digital solutions that empower businesses to grow, automate, and stay ahead in a rapidly evolving digital world.
           </p>
-          <p style={{ fontSize: "0.95rem", color: T.muted, lineHeight: 1.85, marginBottom: 20 }}>
+          <p style={{ fontSize: "clamp(0.85rem, 2vw, 0.95rem)", color: T.muted, lineHeight: 1.85, marginBottom: 20 }}>
             We specialize in Artificial Intelligence, Machine Learning, Mobile App Development, Web Application Development, ASP.NET Enterprise Solutions, and Cloud-Integrated Backend Systems.
           </p>
-          <blockquote style={{ borderLeft: `3px solid ${T.lime}`, paddingLeft: 24, margin: "32px 0", fontStyle: "italic", color: T.mutedLight, fontSize: "1rem", lineHeight: 1.7 }}>
+          <blockquote style={{ borderLeft: `3px solid ${T.lime}`, paddingLeft: 24, margin: "32px 0", fontStyle: "italic", color: T.mutedLight, fontSize: "clamp(0.85rem, 2vw, 1rem)", lineHeight: 1.7 }}>
             "We don't just build software   we create intelligent digital solutions that solve real business challenges and drive measurable results."
           </blockquote>
-          <p style={{ fontSize: "0.88rem", color: T.muted }}>  Nexabytes, Founding Principle</p>
+          <p style={{ fontSize: "clamp(0.78rem, 1.5vw, 0.88rem)", color: T.muted }}>  Nexabytes, Founding Principle</p>
         </div>
         <div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, border: `1px solid ${T.charcoal3}` }}>
             {[["30+","Projects Delivered"],["100%","Satisfaction Rate"],["<24h","Response Time"],["4+","Years Experience"]].map(([n, l]) => (
-              <div key={l} style={{ padding: "40px 28px", borderBottom: `1px solid ${T.charcoal3}`, borderRight: `1px solid ${T.charcoal3}` }}>
-                <span className="stat-num">{n}</span>
+              <div key={l} style={{ padding: "clamp(24px, 5vw, 40px) clamp(16px, 4vw, 28px)", borderBottom: `1px solid ${T.charcoal3}`, borderRight: `1px solid ${T.charcoal3}` }}>
+                <span className="stat-num" style={{ fontSize: "clamp(1.4rem, 4vw, 2.2rem)" }}>{n}</span>
                 <span className="stat-label">{l}</span>
               </div>
             ))}
           </div>
-          <div style={{ marginTop: 40, padding: "32px", border: `1px solid ${T.charcoal3}`, background: T.charcoal2 }}>
+          <div style={{ marginTop: "clamp(24px, 5vw, 40px)", padding: "clamp(20px, 4vw, 32px)", border: `1px solid ${T.charcoal3}`, background: T.charcoal2 }}>
             <span className="section-eyebrow" style={{ marginBottom: 20 }}>Our Commitment</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {[["✅","100% Client Retention   every client we take on, we keep."],["🔐","NDA Protected   full confidentiality on every engagement."],["🏆","On-Time Delivery   we scope honestly and ship on schedule."],["🤝","Long-Term Support   we stay on as your engineering partner."]].map(([icon, text]) => (
                 <div key={text} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: "0.9rem", flexShrink: 0 }}>{icon}</span>
-                  <span style={{ fontSize: "0.83rem", color: T.muted, lineHeight: 1.6 }}>{text}</span>
+                  <span style={{ fontSize: "clamp(0.75rem, 2vw, 0.9rem)", flexShrink: 0 }}>{icon}</span>
+                  <span style={{ fontSize: "clamp(0.75rem, 1.5vw, 0.83rem)", color: T.muted, lineHeight: 1.6 }}>{text}</span>
                 </div>
               ))}
             </div>
@@ -320,18 +373,18 @@ function Process() {
     ["Scale","Ongoing support, analytics, iterative improvement. We stay on as your engineering partner."],
   ];
   return (
-    <section id="process" style={{ padding: "120px 40px", background: T.charcoal2, borderTop: `1px solid ${T.charcoal3}`, borderBottom: `1px solid ${T.charcoal3}` }}>
+    <section id="process" style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 40px)", background: T.charcoal2, borderTop: `1px solid ${T.charcoal3}`, borderBottom: `1px solid ${T.charcoal3}` }}>
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-        <div style={{ marginBottom: 72 }}>
+        <div style={{ marginBottom: "clamp(40px, 8vw, 72px)" }}>
           <span className="section-eyebrow">How we work</span>
           <h2 className="big-title">From the first call<br /><span className="accent">to the last commit.</span></h2>
         </div>
         <div style={{ display: "grid", gap: 0 }}>
           {steps.map(([ title, desc], i) => (
-            <div key={title} style={{ display: "grid", gridTemplateColumns: "60px 220px 1fr", gap: 40, alignItems: "start", padding: "32px 0", borderBottom: `1px solid ${T.charcoal3}` }}>
+            <div key={title} style={{ display: "grid", gridTemplateColumns: "clamp(50px, 12vw, 60px) clamp(150px, 20vw, 220px) 1fr", gap: "clamp(16px, 5vw, 40px)", alignItems: "start", padding: "clamp(20px, 5vw, 32px) 0", borderBottom: `1px solid ${T.charcoal3}` }}>
               <span className="num-label" style={{ marginBottom: 0, paddingTop: 4 }}>Step {String(i + 1).padStart(2, "0")}</span>
-              <h3 style={{ fontSize: "1rem", fontWeight: 800, color: T.white }}>{title}</h3>
-              <p style={{ fontSize: "0.85rem", color: T.muted, lineHeight: 1.75 }}>{desc}</p>
+              <h3 style={{ fontSize: "clamp(0.9rem, 2vw, 1rem)", fontWeight: 800, color: T.white }}>{title}</h3>
+              <p style={{ fontSize: "clamp(0.75rem, 1.5vw, 0.85rem)", color: T.muted, lineHeight: 1.75 }}>{desc}</p>
             </div>
           ))}
         </div>
@@ -345,15 +398,15 @@ function TechStack() {
   const pills = ["⚛️ React","▲ Next.js","🟩 Node.js","☕ Spring Boot","🐍 Python","🤖 TensorFlow","🐳 Docker","☁️ AWS","🍃 MongoDB","🐬 MySQL","📱 Kotlin Compose","💙 Flutter","🔷 TypeScript","🌀 Vue.js","📨 Kafka","🔥 Firebase"];
   const doubled = [...pills, ...pills];
   return (
-    <section style={{ padding: "80px 0", borderBottom: `1px solid ${T.charcoal3}` }}>
-      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 40px", marginBottom: 40, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+    <section style={{ padding: "clamp(50px, 8vw, 80px) 0", borderBottom: `1px solid ${T.charcoal3}` }}>
+      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 clamp(16px, 5vw, 40px)", marginBottom: "clamp(24px, 5vw, 40px)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
         <span className="section-eyebrow" style={{ marginBottom: 0 }}>Technologies we excel in</span>
-        <span style={{ fontSize: "0.78rem", color: T.muted }}>Modern stacks only   never outdated tools</span>
+        <span style={{ fontSize: "clamp(0.7rem, 1.5vw, 0.78rem)", color: T.muted }}>Modern stacks only   never outdated tools</span>
       </div>
       <div className="tech-wrapper">
         <div className="tech-track">
           {doubled.map((p, i) => (
-            <div key={i} style={{ background: T.charcoal2, border: `1px solid ${T.charcoal3}`, padding: "12px 22px", fontSize: "0.85rem", fontWeight: 600, color: T.mutedLight, whiteSpace: "nowrap", flexShrink: 0 }}>{p}</div>
+            <div key={i} style={{ background: T.charcoal2, border: `1px solid ${T.charcoal3}`, padding: "clamp(8px, 2vw, 12px) clamp(14px, 3vw, 22px)", fontSize: "clamp(0.75rem, 1.5vw, 0.85rem)", fontWeight: 600, color: T.mutedLight, whiteSpace: "nowrap", flexShrink: 0 }}>{p}</div>
           ))}
         </div>
       </div>
@@ -369,22 +422,22 @@ function Testimonials() {
     { name: "Muhammad Uzair", role: "CTO, Smart City Solutions", avatar: "M", quote: "Professional, reliable, and genuinely invested in the outcome. They built our parking system from scratch   real-time, containerised, and scalable. Outstanding engineering.", result: "Full production deployment, zero downtime" },
   ];
   return (
-    <section id="testimonials" style={{ padding: "120px 40px", maxWidth: 1400, margin: "0 auto" }}>
-      <div style={{ marginBottom: 72 }}>
+    <section id="testimonials" style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 40px)", maxWidth: 1400, margin: "0 auto" }}>
+      <div style={{ marginBottom: "clamp(40px, 8vw, 72px)" }}>
         <span className="section-eyebrow">Client reviews</span>
         <h2 className="big-title">Words from people<br /><span className="accent">we've helped.</span></h2>
       </div>
       <div className="three-col" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 2 }}>
         {reviews.map((r, i) => (
-          <div key={r.name} style={{ background: T.charcoal2, border: `1px solid ${T.charcoal3}`, padding: "40px 32px" }}>
+          <div key={r.name} style={{ background: T.charcoal2, border: `1px solid ${T.charcoal3}`, padding: "clamp(24px, 5vw, 40px)" }}>
             <div style={{ color: T.lime, fontSize: "1rem", marginBottom: 24, letterSpacing: 2 }}>★★★★★</div>
-            <blockquote style={{ fontSize: "0.92rem", color: T.mutedLight, lineHeight: 1.8, marginBottom: 32, fontStyle: "italic" }}>"{r.quote}"</blockquote>
+            <blockquote style={{ fontSize: "clamp(0.8rem, 2vw, 0.92rem)", color: T.mutedLight, lineHeight: 1.8, marginBottom: 32, fontStyle: "italic" }}>"{r.quote}"</blockquote>
             <div style={{ borderTop: `1px solid ${T.charcoal3}`, paddingTop: 24, display: "flex", gap: 14, alignItems: "center" }}>
               <div style={{ width: 44, height: 44, background: T.lime, color: T.charcoal, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: "1rem", flexShrink: 0 }}>{r.avatar}</div>
               <div>
-                <div style={{ fontWeight: 800, color: T.white, fontSize: "0.9rem" }}>{r.name}</div>
-                <div style={{ fontSize: "0.75rem", color: T.muted, marginTop: 2 }}>{r.role}</div>
-                <div style={{ fontSize: "0.72rem", color: T.lime, fontWeight: 700, marginTop: 4 }}>✓ {r.result}</div>
+                <div style={{ fontWeight: 800, color: T.white, fontSize: "clamp(0.8rem, 2vw, 0.9rem)" }}>{r.name}</div>
+                <div style={{ fontSize: "clamp(0.65rem, 1.5vw, 0.75rem)", color: T.muted, marginTop: 2 }}>{r.role}</div>
+                <div style={{ fontSize: "clamp(0.65rem, 1.5vw, 0.72rem)", color: T.lime, fontWeight: 700, marginTop: 4 }}>✓ {r.result}</div>
               </div>
             </div>
           </div>
@@ -397,9 +450,9 @@ function Testimonials() {
 // ─── PRICING ──────────────────────────────────────────────────────────────────
 function Pricing({ plans }) {
   return (
-    <section id="pricing" style={{ padding: "120px 40px", background: T.charcoal2, borderTop: `1px solid ${T.charcoal3}`, borderBottom: `1px solid ${T.charcoal3}` }}>
+    <section id="pricing" style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 40px)", background: T.charcoal2, borderTop: `1px solid ${T.charcoal3}`, borderBottom: `1px solid ${T.charcoal3}` }}>
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 72, flexWrap: "wrap", gap: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "clamp(40px, 8vw, 72px)", flexWrap: "wrap", gap: "clamp(16px, 5vw, 24px)" }}>
           <div>
             <span className="section-eyebrow">Investment</span>
             <h2 className="big-title">Simple, transparent<br /><span className="accent">pricing.</span></h2>
@@ -408,20 +461,20 @@ function Pricing({ plans }) {
         </div>
         <div className="three-col" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 2 }}>
           {plans.map(p => (
-            <div key={p.id} style={{ background: p.featured ? T.lime : T.charcoal, border: `1px solid ${p.featured ? T.lime : T.charcoal3}`, padding: "48px 36px", position: "relative", transition: "all 0.2s" }}>
+            <div key={p.id} style={{ background: p.featured ? T.lime : T.charcoal, border: `1px solid ${p.featured ? T.lime : T.charcoal3}`, padding: "clamp(30px, 6vw, 48px) clamp(24px, 5vw, 36px)", position: "relative", transition: "all 0.2s" }}>
               {p.featured && <div style={{ position: "absolute", top: -1, left: 0, right: 0, height: 3, background: T.charcoal }} />}
               <div style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: p.featured ? T.charcoal : T.lime, marginBottom: 12 }}>{p.name}</div>
-              <div style={{ fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 900, color: p.featured ? T.charcoal : T.white, lineHeight: 1, marginBottom: 8, letterSpacing: "-0.03em" }}>{p.price}</div>
-              <div style={{ fontSize: "0.82rem", color: p.featured ? "rgba(26,26,26,0.65)" : T.muted, marginBottom: 36 }}>{p.sub}</div>
+              <div style={{ fontSize: "clamp(1.6rem, 5vw, 3rem)", fontWeight: 900, color: p.featured ? T.charcoal : T.white, lineHeight: 1, marginBottom: 8, letterSpacing: "-0.03em" }}>{p.price}</div>
+              <div style={{ fontSize: "clamp(0.75rem, 1.5vw, 0.82rem)", color: p.featured ? "rgba(26,26,26,0.65)" : T.muted, marginBottom: 36 }}>{p.sub}</div>
               <div style={{ borderTop: `1px solid ${p.featured ? "rgba(26,26,26,0.15)" : T.charcoal3}`, paddingTop: 28, marginBottom: 36 }}>
                 {p.features.map(f => (
                   <div key={f} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
                     <span style={{ color: p.featured ? T.charcoal : T.lime, fontWeight: 800, fontSize: "0.8rem", flexShrink: 0, marginTop: 2 }}>✓</span>
-                    <span style={{ fontSize: "0.84rem", color: p.featured ? T.charcoal : T.muted, lineHeight: 1.5 }}>{f}</span>
+                    <span style={{ fontSize: "clamp(0.75rem, 1.5vw, 0.84rem)", color: p.featured ? T.charcoal : T.muted, lineHeight: 1.5 }}>{f}</span>
                   </div>
                 ))}
               </div>
-              <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} style={{ width: "100%", padding: "14px", background: p.featured ? T.charcoal : T.lime, color: p.featured ? T.lime : T.charcoal, border: "none", fontWeight: 800, fontSize: "0.85rem", cursor: "pointer", letterSpacing: "0.04em", transition: "all 0.2s" }}>
+              <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} style={{ width: "100%", padding: "clamp(12px, 3vw, 14px)", background: p.featured ? T.charcoal : T.lime, color: p.featured ? T.lime : T.charcoal, border: "none", fontWeight: 800, fontSize: "clamp(0.75rem, 1.5vw, 0.85rem)", cursor: "pointer", letterSpacing: "0.04em", transition: "all 0.2s" }}>
                 Get Started →
               </button>
             </div>
@@ -444,22 +497,22 @@ function FAQ() {
     ["How do we start?","Fill in the contact form below   we'll schedule a free 20-minute discovery call within 24 hours."],
   ];
   return (
-    <section id="faq" style={{ padding: "120px 40px", maxWidth: 1400, margin: "0 auto" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "start" }} className="two-col">
+    <section id="faq" style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 40px)", maxWidth: 1400, margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(40px, 8vw, 80px)", alignItems: "start" }} className="two-col">
         <div>
           <span className="section-eyebrow">FAQs</span>
           <h2 className="big-title">Common<br /><span className="accent">questions.</span></h2>
           <div className="divider" />
-          <p style={{ fontSize: "0.9rem", color: T.muted, lineHeight: 1.8 }}>Can't find your answer? Send us a note   we reply within 24 hours.</p>
+          <p style={{ fontSize: "clamp(0.8rem, 2vw, 0.9rem)", color: T.muted, lineHeight: 1.8 }}>Can't find your answer? Send us a note   we reply within 24 hours.</p>
         </div>
         <div>
           {faqs.map(([q, a], i) => (
             <div key={i} style={{ borderBottom: `1px solid ${T.charcoal3}` }}>
-              <button className="faq-btn" onClick={() => setOpen(open === i ? null : i)} style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: "24px 0", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", fontWeight: 700, fontSize: "0.92rem", color: open === i ? T.lime : T.white, transition: "color 0.2s", gap: 16 }}>
+              <button className="faq-btn" onClick={() => setOpen(open === i ? null : i)} style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: "clamp(16px, 4vw, 24px) 0", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", fontWeight: 700, fontSize: "clamp(0.8rem, 2vw, 0.92rem)", color: open === i ? T.lime : T.white, transition: "color 0.2s", gap: 16 }}>
                 <span>{q}</span>
                 <span style={{ color: T.lime, fontSize: "1.2rem", flexShrink: 0, transform: open === i ? "rotate(45deg)" : "none", transition: "transform 0.2s" }}>+</span>
               </button>
-              {open === i && <p style={{ padding: "0 0 24px", fontSize: "0.86rem", color: T.muted, lineHeight: 1.8 }}>{a}</p>}
+              {open === i && <p style={{ padding: "0 0 clamp(12px, 3vw, 24px)", fontSize: "clamp(0.75rem, 1.5vw, 0.86rem)", color: T.muted, lineHeight: 1.8 }}>{a}</p>}
             </div>
           ))}
         </div>
@@ -515,30 +568,30 @@ function Contact() {
       setSending(false);
     }
   };
-  const inputStyle = { width: "100%", background: T.charcoal, border: `1px solid ${T.charcoal3}`, color: T.white, padding: "14px 16px", fontSize: "0.88rem", outline: "none", fontFamily: "inherit", marginBottom: 14, transition: "border-color 0.2s" };
+  const inputStyle = { width: "100%", background: T.charcoal, border: `1px solid ${T.charcoal3}`, color: T.white, padding: "clamp(10px, 2vw, 14px) clamp(12px, 2vw, 16px)", fontSize: "clamp(0.75rem, 1.5vw, 0.88rem)", outline: "none", fontFamily: "inherit", marginBottom: 14, transition: "border-color 0.2s" };
   return (
-    <section id="contact" style={{ padding: "120px 40px", background: T.charcoal2, borderTop: `1px solid ${T.charcoal3}` }}>
+    <section id="contact" style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 40px)", background: T.charcoal2, borderTop: `1px solid ${T.charcoal3}` }}>
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-        <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "start" }}>
+        <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(40px, 8vw, 80px)", alignItems: "start" }}>
           <div>
             <span className="section-eyebrow">Booking · 2025</span>
             <h2 className="big-title">Have a project that<br />deserves the<br /><span className="accent">right team?</span></h2>
             <div className="divider" />
-            <p style={{ fontSize: "0.92rem", color: T.muted, lineHeight: 1.85, marginBottom: 48 }}>
+            <p style={{ fontSize: "clamp(0.8rem, 2vw, 0.92rem)", color: T.muted, lineHeight: 1.85, marginBottom: 48 }}>
               We take on projects year-round. If you have a brief, the right time to send a first note is now. We'll schedule a free discovery call within 24 hours.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(12px, 3vw, 24px)" }}>
               {[
                 ["📧", "Email", "nexabyte.byt@gmail.com"],
                 ["📞", "Phone", "+92 311 0158663"],
                 ["📍", "Location", "Islamabad, Pakistan   Remote Worldwide"],
                 ["⏱️", "Response", "Within 24 hours, guaranteed"]
               ].map(([icon, label, val]) => (
-                <div key={label} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                <div key={label} style={{ display: "flex", gap: "clamp(12px, 3vw, 16px)", alignItems: "flex-start" }}>
                   <div style={{ width: 44, height: 44, background: T.charcoal, border: `1px solid ${T.charcoal3}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>{icon}</div>
                   <div>
-                    <div style={{ fontSize: "0.68rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: T.lime, marginBottom: 4 }}>{label}</div>
-                    <div style={{ fontSize: "0.85rem", color: T.muted }}>{val}</div>
+                    <div style={{ fontSize: "clamp(0.6rem, 1.5vw, 0.68rem)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: T.lime, marginBottom: 4 }}>{label}</div>
+                    <div style={{ fontSize: "clamp(0.75rem, 1.5vw, 0.85rem)", color: T.muted }}>{val}</div>
                   </div>
                 </div>
               ))}
@@ -546,14 +599,14 @@ function Contact() {
           </div>
           <div>
             {sent ? (
-              <div style={{ padding: "80px 0", textAlign: "center" }}>
-                <div style={{ fontSize: "3rem", marginBottom: 20 }}>✓</div>
-                <h3 style={{ fontSize: "1.8rem", fontWeight: 900, color: T.lime, marginBottom: 12 }}>Message sent.</h3>
-                <p style={{ color: T.muted }}>We'll get back to you within 24 hours.</p>
+              <div style={{ padding: "clamp(40px, 10vw, 80px) 0", textAlign: "center" }}>
+                <div style={{ fontSize: "clamp(2rem, 8vw, 3rem)", marginBottom: 20 }}>✓</div>
+                <h3 style={{ fontSize: "clamp(1.4rem, 5vw, 1.8rem)", fontWeight: 900, color: T.lime, marginBottom: 12 }}>Message sent.</h3>
+                <p style={{ color: T.muted, fontSize: "clamp(0.8rem, 2vw, 0.9rem)" }}>We'll get back to you within 24 hours.</p>
               </div>
             ) : (
               <form onSubmit={submit}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 14px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 clamp(10px, 3vw, 14px)" }}>
                   <div>
                     <label style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: T.muted, display: "block", marginBottom: 8 }}>Full Name *</label>
                     <input name="name" value={form.name} onChange={handle} style={inputStyle} placeholder="Your name" onFocus={e => e.target.style.borderColor = T.lime} onBlur={e => e.target.style.borderColor = T.charcoal3} />
@@ -575,7 +628,7 @@ function Contact() {
                 </select>
                 <label style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: T.muted, display: "block", marginBottom: 8 }}>Project Description *</label>
                 <textarea name="message" value={form.message} onChange={handle} style={{ ...inputStyle, minHeight: 140, resize: "vertical" }} placeholder="Tell us about your project, goals, and timeline…" onFocus={e => e.target.style.borderColor = T.lime} onBlur={e => e.target.style.borderColor = T.charcoal3} />
-                <button type="submit" className="btn-lime" disabled={sending} style={{ width: "100%", padding: "16px", background: sending ? T.limeDark : T.lime, color: T.charcoal, border: "none", fontWeight: 800, fontSize: "0.9rem", cursor: sending ? "wait" : "pointer", letterSpacing: "0.04em", transition: "all 0.2s", marginTop: 4, opacity: sending ? 0.8 : 1 }}>
+                <button type="submit" className="btn-lime" disabled={sending} style={{ width: "100%", padding: "clamp(12px, 3vw, 16px)", background: sending ? T.limeDark : T.lime, color: T.charcoal, border: "none", fontWeight: 800, fontSize: "clamp(0.75rem, 1.5vw, 0.9rem)", cursor: sending ? "wait" : "pointer", letterSpacing: "0.04em", transition: "all 0.2s", marginTop: 4, opacity: sending ? 0.8 : 1 }}>
                   {sending ? "Sending..." : "Send Message   Let's Build →"}
                 </button>
               </form>
@@ -591,12 +644,12 @@ function Contact() {
 function Footer() {
   const go = id => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   return (
-    <footer style={{ background: T.charcoal, borderTop: `1px solid ${T.charcoal3}`, padding: "72px 40px 36px" }}>
+    <footer style={{ background: T.charcoal, borderTop: `1px solid ${T.charcoal3}`, padding: "clamp(40px, 8vw, 72px) clamp(16px, 5vw, 40px) clamp(20px, 4vw, 36px)" }}>
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-        <div className="four-col" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 48, marginBottom: 60 }}>
+        <div className="four-col" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "clamp(32px, 5vw, 48px)", marginBottom: "clamp(40px, 8vw, 60px)" }}>
           <div>
-            <div style={{ fontSize: "1.4rem", fontWeight: 900, color: T.white, marginBottom: 16, letterSpacing: "-0.04em" }}>Nexa<span style={{ color: T.lime }}>bytes</span></div>
-            <p style={{ fontSize: "0.82rem", color: T.muted, lineHeight: 1.8, maxWidth: 260, marginBottom: 24 }}>A premium software development agency building next-generation digital products between Islamabad and the world.</p>
+            <div style={{ fontSize: "clamp(1rem, 3vw, 1.4rem)", fontWeight: 900, color: T.white, marginBottom: 16, letterSpacing: "-0.04em" }}>Nexa<span style={{ color: T.lime }}>bytes</span></div>
+            <p style={{ fontSize: "clamp(0.75rem, 1.5vw, 0.82rem)", color: T.muted, lineHeight: 1.8, maxWidth: 260, marginBottom: 24 }}>A premium software development agency building next-generation digital products between Islamabad and the world.</p>
             <div style={{ display: "flex", gap: 10 }}>
               {[["🐙","https://github.com"],["💼","https://linkedin.com"],["📧","mailto:nexabyte.byt@gmail.com"]].map(([icon, href]) => (
                 <a key={href} href={href} target="_blank" rel="noreferrer" className="social-btn" style={{ width: 36, height: 36, border: `1px solid ${T.charcoal3}`, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: "0.9rem", transition: "all 0.2s" }}>{icon}</a>
@@ -609,13 +662,13 @@ function Footer() {
             ["Contact",["nexabyte.byt@gmail.com","Islamabad, Pakistan","Remote Worldwide","Mon–Sat 9AM–6PM PKT"], []],
           ].map(([heading, items, labels]) => (
             <div key={heading}>
-              <h4 style={{ fontSize: "0.62rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: T.lime, marginBottom: 20 }}>{heading}</h4>
+              <h4 style={{ fontSize: "clamp(0.6rem, 1.5vw, 0.62rem)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: T.lime, marginBottom: 20 }}>{heading}</h4>
               <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
                 {items.map((item, i) => (
                   <li key={item}>
                     {labels.length > 0
-                      ? <span className="footer-link" onClick={() => go(item)} style={{ color: T.muted, fontSize: "0.82rem", cursor: "pointer", transition: "color 0.2s" }}>{labels[i]}</span>
-                      : <span style={{ color: T.muted, fontSize: "0.82rem" }}>{item}</span>
+                      ? <span className="footer-link" onClick={() => go(item)} style={{ color: T.muted, fontSize: "clamp(0.75rem, 1.5vw, 0.82rem)", cursor: "pointer", transition: "color 0.2s" }}>{labels[i]}</span>
+                      : <span style={{ color: T.muted, fontSize: "clamp(0.75rem, 1.5vw, 0.82rem)" }}>{item}</span>
                     }
                   </li>
                 ))}
@@ -624,8 +677,8 @@ function Footer() {
           ))}
         </div>
         <div style={{ borderTop: `1px solid ${T.charcoal3}`, paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-          <span style={{ fontSize: "0.75rem", color: T.muted }}>© 2026 Nexabytes. All rights reserved.</span>
-          <span style={{ fontSize: "0.75rem", color: T.muted }}>Built with precision for ambitious businesses.</span>
+          <span style={{ fontSize: "clamp(0.65rem, 1.5vw, 0.75rem)", color: T.muted }}>© 2026 Nexabytes. All rights reserved.</span>
+          <span style={{ fontSize: "clamp(0.65rem, 1.5vw, 0.75rem)", color: T.muted }}>Built with precision for ambitious businesses.</span>
         </div>
       </div>
     </footer>
